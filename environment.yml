@@ -1,0 +1,13 @@
+name: gse150903-scrna
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - pandas
+  - scanpy
+  - matplotlib
+  - scipy
+  - openpyxl
+  - jupyterlab
+  - ipykernel

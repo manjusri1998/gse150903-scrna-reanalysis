@@ -1,0 +1,29 @@
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# Large transcriptomics data files are documented but not committed.
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/README.md
+
+# Common large bioinformatics outputs.
+*.fastq
+*.fq
+*.bam
+*.sam
+*.cram
+*.h5ad
+*.loom
+*.mtx
+*.gz
+*.zip
+
+# Local environments.
+.venv/
+venv/
+env/
+.env
