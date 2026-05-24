@@ -1,7 +1,7 @@
 # GSE150903 Single-Cell Transcriptomics Reanalysis
 
-This is a computational biology portfolio project reanalyzing the public
-single-cell RNA-seq dataset
+This is a computational biology portfolio project reanalyzing one focused part
+of the public single-cell RNA-seq dataset
 [GSE150903](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE150903) in
 Python with Scanpy.
 
@@ -39,6 +39,22 @@ downstream reanalysis:
 The original exploratory notebook is kept for transparency, but it used extra
 QC and normalization steps that are not ideal for an already processed
 SCT-scaled matrix.
+
+## Analysis Scope
+
+This repository does not attempt to reproduce the entire paper. The current
+notebook focuses on a narrow scRNA-seq component:
+
+- use the telencephalon organoid sample as a non-ChP reference/comparison
+  sample
+- distinguish telencephalon-like cells from ChP organoid cells
+- identify mature ChP-like epithelial cells using marker genes
+- prepare and subcluster the mature ChP population
+- inspect marker patterns for mature ChP states such as ciliated/light,
+  mitochondria-rich/dark, and myoepithelial-like cells
+
+The next notebook will extend this work with gene enrichment analysis and
+comparison to external human and mouse datasets.
 
 ## Recommended Notebook
 

@@ -1,7 +1,12 @@
 # Methods-Guided Reproduction Plan
 
-This document maps the paper's supplementary methods onto a Python/Scanpy
-reanalysis plan for `GSE150903`.
+This document maps one focused part of the paper's supplementary scRNA-seq
+methods onto a Python/Scanpy reanalysis plan for `GSE150903`.
+
+The current notebook is scoped to broad cell identity, telencephalon-reference
+vs ChP organoid comparison, mature ChP identification, and mature ChP
+subsetting/subclustering. Gene enrichment analysis and comparison to external
+human and mouse datasets are reserved for a follow-up notebook.
 
 ## What The Paper Reports
 
@@ -34,13 +39,17 @@ The paper reports these analysis parameters:
 ## Python Reproduction Strategy
 
 The paper used Seurat/R. This project reproduces the downstream analysis in
-Python with Scanpy, using the processed SCT-scaled matrix released on GEO.
+Python with Scanpy, using the processed SCT-scaled matrix released on GEO. The
+goal here is not to reproduce every analysis in the paper, but to reproduce the
+cell-identity workflow leading to mature ChP identification.
 
 | Paper method or parameter | Python/Scanpy implementation |
 | --- | --- |
 | CellRanger Count v3.1.0 with STAR/GRCh38 | documented as the upstream source of the GEO matrix; not rerun here |
 | Seurat v3 object | `scanpy.AnnData` object |
 | merged sample matrices | load GEO matrix, transpose to cells x genes, add sample labels |
+| telencephalon organoid sample | use as the non-ChP reference/comparison sample |
+| ChP organoid D27/D46/D53 samples | analyze as ChP developmental samples |
 | mitochondrial percentage >30% removed | documented; exact re-filtering requires raw counts |
 | likely doublets removed using `nCount_RNA` | documented as equivalent to `total_counts`; exact re-filtering requires raw counts |
 | final dataset of 32,464 cells | checked against the processed GEO matrix dimensions |
@@ -127,6 +136,17 @@ The new notebook should be more methods-aware than the first version:
 11. Assign rule-assisted cell-type labels using marker scores.
 12. Make final composition and marker-dotplot figures.
 13. Optionally subcluster mature ChP-like cells using PCs 1-12.
+
+## Follow-Up Notebook Scope
+
+The next notebook should start from the mature ChP subset and focus on analyses
+that go beyond the current reproduction:
+
+- gene ontology or pathway enrichment for mature ChP subclusters
+- marker interpretation for mitochondria-rich/dark, ciliated/light, and
+  myoepithelial-like states
+- comparison with external human developing brain or ChP datasets
+- comparison with mouse ChP datasets after ortholog mapping
 
 ## What To Be Careful About
 
