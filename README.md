@@ -1,88 +1,97 @@
 # GSE150903 Single-Cell Transcriptomics Reanalysis
 
-This is my first computational biology portfolio project. I reanalyzed a public
-single-cell RNA-seq dataset using Python and Scanpy, starting from an expression
-matrix and building toward interpretable cell-type annotations and marker-gene
-visualizations.
+This is a computational biology portfolio project reanalyzing the public
+single-cell RNA-seq dataset
+[GSE150903](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE150903) in
+Python with Scanpy.
 
-The analysis uses public data from
-[GEO accession GSE150903](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE150903),
-associated with the study **"Choroid plexus organoids predict CNS drug
-permeability and reveal human CSF proteins produced by specialized cell types."**
+The dataset is associated with the study **"Choroid plexus organoids predict CNS
+drug permeability and reveal human CSF proteins produced by specialized cell
+types."**
 
-## Project Goal
+## Important Data Note
 
-The goal was not only to reproduce a figure, but to practice a complete
-single-cell transcriptomics workflow on a published dataset and document the
-reasoning behind each step.
+The GEO file used here is:
 
-In this notebook, I:
+```text
+GSE150903_SCT_scaled_count_matrix.txt.gz
+```
 
-- loaded a gene-by-cell expression matrix into an AnnData object
-- assigned sample metadata for telencephalon and choroid plexus organoid samples
-- calculated quality-control metrics, including detected genes, total counts,
-  and mitochondrial percentage
-- filtered low-quality cells and rarely detected genes
-- normalized counts, log-transformed expression values, and selected highly
-  variable genes
-- performed PCA, neighborhood graph construction, UMAP, and Leiden clustering
-- inspected cluster composition by sample
-- tested marker genes with Scanpy's Wilcoxon method
-- added a more memory-efficient marker-gene workflow using sparse matrices and
-  highly variable genes
-- implemented a custom marker screen comparing in-cluster vs out-of-cluster
-  expression
-- visualized known choroid plexus, neuronal, stromal, ciliated, cycling, and
-  transport-related marker genes
-- scored clusters using marker-gene sets from the paper and related choroid
-  plexus biology
-- generated automatic cluster annotations
-- reviewed/curated cluster labels and added final cell-type annotations
-- summarized reviewed cell-type composition across samples
-- generated a final marker dotplot using reviewed cell-type labels
+This is a processed SCTransform-scaled expression matrix, not raw FASTQ data and
+not a raw 10X UMI matrix. The paper reports that the authors already performed
+QC, doublet filtering, SCTransform normalization, regression of mitochondrial
+percentage and cell cycle, and produced a final dataset of 32,464 high-quality
+cells.
 
-## Key Outputs
+Because the downloaded matrix already has 32,464 cells, the recommended analysis
+in this repository treats it as the authors' processed dataset and focuses on
+downstream reanalysis:
+
+- sample metadata assignment
+- PCA and UMAP
+- neighborhood graph construction
+- Leiden clustering as a Python analogue to Seurat clustering
+- marker-gene analysis
+- marker-set scoring
+- cell-type annotation
+- focused subsetting for biological questions
+
+The original exploratory notebook is kept for transparency, but it used extra
+QC and normalization steps that are not ideal for an already processed
+SCT-scaled matrix.
+
+## Recommended Notebook
+
+Use this notebook for the current methods-aware Python reproduction:
+
+```text
+notebooks/02_methods_guided_reanalysis.ipynb
+```
+
+This notebook explicitly maps the paper's Seurat/R workflow to Python/Scanpy:
+
+| Paper method or parameter | Python/Scanpy implementation |
+| --- | --- |
+| Seurat object | `scanpy.AnnData` |
+| `nCount_RNA` | `adata.obs["total_counts"]` when raw counts are available |
+| `nFeature_RNA` | `adata.obs["n_genes_by_counts"]` when raw counts are available |
+| `FindNeighbors` | `sc.pp.neighbors` |
+| `FindClusters` | `sc.tl.leiden` |
+| UMAP | `sc.tl.umap` |
+| 4 PCs for main clustering | `sc.pp.neighbors(..., n_pcs=4)` |
+| mature ChP subclustering with PCs 1-12 | subset and rerun neighbors with `n_pcs=12` |
+
+The analysis boundary is documented in
+[docs/paper_methods_reproduction_plan.md](docs/paper_methods_reproduction_plan.md).
+
+## Key Outputs From The First Pass
+
+These figures were generated during the first-pass reanalysis and are retained
+as portfolio outputs.
 
 ### Reviewed Cell-Type Composition
-
-This stacked bar chart summarizes the percentage of reviewed cell-type labels in
-each sample.
 
 ![Reviewed cell-type composition by sample](results/figures/reviewed_cell_type_composition_by_sample.png)
 
 ### Marker Expression By Reviewed Cell Type
 
-This dotplot shows selected marker genes grouped by biological category across
-the final reviewed cell-type annotations. Dot size represents the fraction of
-cells expressing a gene, and color represents scaled mean expression.
-
 ![Marker dotplot by reviewed cell type](results/figures/marker_dotplot_by_reviewed_cell_type.png)
-
-## What This Project Demonstrates
-
-This project shows that I can move beyond running a single plotting command and
-work through the main stages of a single-cell analysis:
-
-- building an analysis-ready AnnData object
-- using quality control to decide which cells and genes to retain
-- reducing dimensionality and clustering cells
-- comparing marker-gene strategies for biological interpretation
-- using memory-aware approaches for larger single-cell matrices
-- connecting computational clusters to biological cell-type labels
-- creating publication-style summary visualizations
-- organizing the work as a reproducible GitHub project
 
 ## Repository Structure
 
 ```text
 .
 ├── README.md
+├── config/
+│   └── paper_parameters.yml
 ├── data/
 │   └── README.md
 ├── docs/
-│   └── github_quickstart.md
+│   ├── github_quickstart.md
+│   └── paper_methods_reproduction_plan.md
 ├── notebooks/
-│   └── gse150903_choroid_plexus_scrna_reproduction.ipynb
+│   ├── 01_exploratory_first_pass_reanalysis.ipynb
+│   └── 02_methods_guided_reanalysis.ipynb
 ├── results/
 │   └── figures/
 │       ├── reviewed_cell_type_composition_by_sample.png
@@ -107,11 +116,11 @@ Or install the Python requirements:
 pip install -r requirements.txt
 ```
 
-Download the processed data from GEO and place it as described in
+Download the processed GEO matrix and place it as described in
 [data/README.md](data/README.md). Then open:
 
 ```text
-notebooks/gse150903_choroid_plexus_scrna_reproduction.ipynb
+notebooks/02_methods_guided_reanalysis.ipynb
 ```
 
 Run the notebook from the repository root so relative paths such as
@@ -126,12 +135,11 @@ Run the notebook from the repository root so relative paths such as
   and 53
 
 Large expression matrices and generated AnnData files are intentionally excluded
-from GitHub. The data download instructions are documented in
-[data/README.md](data/README.md).
+from GitHub.
 
 ## Notes
 
-This project is a learning-focused reanalysis. The final annotations are based
-on marker-gene scoring, automated cluster labels, and manual review, and should
-be interpreted as a portfolio demonstration rather than a replacement for the
-original publication's full analysis.
+This is a learning-focused reanalysis. The current recommended workflow uses
+the authors' processed SCT-scaled matrix for downstream analysis. A full
+from-raw reproduction would require raw 10X/SRA inputs and either rerunning
+CellRanger/Seurat or building a separate raw-count Python pipeline.
