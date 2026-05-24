@@ -31,6 +31,29 @@ The paper reports these analysis parameters:
   marker genes
 - subcluster the mature choroid plexus cluster using PCs 1-12
 
+## Python Reproduction Strategy
+
+The paper used Seurat/R. This project reproduces the downstream analysis in
+Python with Scanpy, using the processed SCT-scaled matrix released on GEO.
+
+| Paper method or parameter | Python/Scanpy implementation |
+| --- | --- |
+| CellRanger Count v3.1.0 with STAR/GRCh38 | documented as the upstream source of the GEO matrix; not rerun here |
+| Seurat v3 object | `scanpy.AnnData` object |
+| merged sample matrices | load GEO matrix, transpose to cells x genes, add sample labels |
+| mitochondrial percentage >30% removed | documented; exact re-filtering requires raw counts |
+| likely doublets removed using `nCount_RNA` | documented as equivalent to `total_counts`; exact re-filtering requires raw counts |
+| final dataset of 32,464 cells | checked against the processed GEO matrix dimensions |
+| SCTransform normalization/scaling/variable features | use the released SCT-scaled matrix directly; do not re-normalize as raw counts |
+| regress mitochondrial percentage and cell cycle | documented as part of the paper's Seurat workflow; exact rerun requires raw counts/Seurat |
+| ElbowPlot selected 4 PCs | use `sc.pp.neighbors(..., n_pcs=4)` for main clustering |
+| Seurat `FindNeighbors` | `sc.pp.neighbors` |
+| Seurat `FindClusters` | `sc.tl.leiden` |
+| UMAP | `sc.tl.umap` |
+| top 10 differentially expressed genes | `sc.tl.rank_genes_groups(..., method="wilcoxon")` |
+| known marker gene interpretation | Scanpy dotplots, UMAP feature plots, and marker-set scoring |
+| mature ChP subclustering with PCs 1-12 | optional mature/ChP-like subset with `n_pcs=12` |
+
 ## Important Reproduction Boundary
 
 GEO provides `GSE150903_SCT_scaled_count_matrix.txt.gz` as the processed matrix.
@@ -57,7 +80,7 @@ There are two possible reproduction levels:
 | --- | --- |
 | Merge sample matrices | read matrix, transpose to cells x genes, assign sample labels |
 | Mitochondrial QC | calculate `pct_counts_mt` if raw counts are available |
-| Doublet filtering by `nCount_RNA` | approximate with total-count thresholds or use Scrublet if raw counts are available |
+| Doublet filtering by `nCount_RNA` | `adata.obs["total_counts"]`; approximate with high-total-count thresholds, or use Scrublet if raw counts are available |
 | SCTransform | use the provided SCT matrix directly, or use Pearson residuals/Scanpy normalization only if starting from raw counts |
 | ElbowPlot | inspect PCA variance ratio |
 | 4 PCs | `sc.pp.neighbors(..., n_pcs=4)` |
@@ -67,6 +90,25 @@ There are two possible reproduction levels:
 | Top 10 DE genes | `sc.tl.rank_genes_groups(..., n_genes=10)` |
 | Known marker gene analysis | dotplots, matrixplots, UMAP feature plots |
 | Mature ChP subclustering PCs 1-12 | subset mature ChP-like cells, rerun PCA/neighbors/Leiden/UMAP with `n_pcs=12` |
+
+## Seurat Metadata Crosswalk
+
+Some paper terms are Seurat object metadata columns rather than standalone
+methods.
+
+| Seurat/R term | Meaning | Scanpy/Python equivalent |
+| --- | --- | --- |
+| `nCount_RNA` | total UMI/RNA counts per cell | `adata.obs["total_counts"]` from `sc.pp.calculate_qc_metrics` |
+| `nFeature_RNA` | number of detected genes per cell | `adata.obs["n_genes_by_counts"]` |
+| mitochondrial percentage | percent counts assigned to mitochondrial genes | `adata.obs["pct_counts_mt"]` |
+| cell cycle score | score derived from S-phase/G2M marker genes | `sc.tl.score_genes_cell_cycle` |
+| Seurat identities / clusters | active cluster or cell labels | `adata.obs["leiden"]` or another annotation column |
+
+For this repository's processed GEO matrix, `nCount_RNA`, `nFeature_RNA`, and
+`pct_counts_mt` cannot be reproduced exactly unless raw counts are available.
+The methods-guided notebook therefore uses the processed SCT matrix for
+downstream PCA, clustering, UMAP, and marker analysis, while documenting where a
+raw-count workflow would be required.
 
 ## Redo Notebook Outline
 

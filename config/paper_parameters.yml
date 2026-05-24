@@ -35,6 +35,8 @@ paper_wet_lab_summary:
 paper_qc:
   remove_cells_mito_percent_greater_than: 30
   doublet_filter_basis: nCount_RNA
+  ncount_rna_python_equivalent: adata.obs["total_counts"]
+  nfeature_rna_python_equivalent: adata.obs["n_genes_by_counts"]
   final_high_quality_cells_reported: 32464
 
 paper_normalization:
