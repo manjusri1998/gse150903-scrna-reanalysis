@@ -3,5 +3,6 @@ scanpy
 matplotlib
 scipy
 openpyxl
+pyyaml
 jupyterlab
 ipykernel

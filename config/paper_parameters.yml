@@ -1,0 +1,70 @@
+dataset:
+  geo_accession: GSE150903
+  processed_matrix: data/processed/GSE150903_SCT_scaled_count_matrix.txt
+  note: >
+    GEO provides an SCT-scaled processed count matrix. This is suitable for a
+    downstream reproduction of clustering, UMAP, marker inspection, and
+    annotation, but it is not the same as starting from raw 10X feature-barcode
+    matrices.
+
+samples:
+  T:
+    label: Telencephalon organoids
+    source: H9 telencephalic organoids
+    day: 55
+  "1":
+    label: Choroid Plexus Org D27
+    source: H1 choroid plexus organoids
+    day: 27
+  "2":
+    label: Choroid Plexus Org D46
+    source: H1 choroid plexus organoids
+    day: 46
+  "3":
+    label: Choroid Plexus Org D53
+    source: H1 choroid plexus organoids
+    day: 53
+
+paper_wet_lab_summary:
+  pooled_organoids_per_condition: 2
+  dissociation: Accumax
+  single_cell_platform: 10X Genomics Chromium Single Cell 3 prime v3
+  aligner_pipeline: CellRanger Count 3.1.0 with STAR
+  reference_genome: GRCh38
+
+paper_qc:
+  remove_cells_mito_percent_greater_than: 30
+  doublet_filter_basis: nCount_RNA
+  ncount_rna_python_equivalent: adata.obs["total_counts"]
+  nfeature_rna_python_equivalent: adata.obs["n_genes_by_counts"]
+  final_high_quality_cells_reported: 32464
+
+paper_normalization:
+  method: SCTransform
+  regress_out:
+    - mitochondrial_mapping_percentage
+    - cell_cycle
+
+paper_dimensionality_reduction:
+  pca_dimensions_used: 4
+  pca_selection_method: ElbowPlot
+  clustering: Seurat FindNeighbors and FindClusters
+  visualization: UMAP
+
+paper_marker_analysis:
+  cluster_identification:
+    - top 10 differentially expressed genes per cluster
+    - known marker gene analysis
+  mature_chp_subclustering:
+    subset: mature ChP cluster
+    pca_dimensions_used: 1-12
+
+python_reproduction_choices:
+  package: scanpy
+  downstream_matrix_strategy: >
+    Use the published SCT-scaled matrix directly for PCA, neighbors, Leiden
+    clustering, UMAP, marker visualization, and annotation. Avoid re-normalizing
+    the SCT-scaled matrix as if it were raw counts.
+  clustering_note: >
+    Seurat FindClusters and Scanpy Leiden are not identical implementations, so
+    cluster numbers may differ even when the biological structure is similar.
