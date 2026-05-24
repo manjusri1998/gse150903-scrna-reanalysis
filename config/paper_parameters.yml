@@ -1,6 +1,6 @@
 dataset:
   geo_accession: GSE150903
-  processed_matrix: data/processed/GSE150903_SCT_scaled_count_matrix.txt
+  processed_matrix: data/processed/GSE150903_SCT_scaled_count_matrix.tsv
   note: >
     GEO provides an SCT-scaled processed count matrix. This is suitable for a
     downstream reproduction of clustering, UMAP, marker inspection, and

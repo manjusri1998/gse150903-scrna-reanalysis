@@ -14,7 +14,7 @@ types."**
 The GEO file used here is:
 
 ```text
-GSE150903_SCT_scaled_count_matrix.txt.gz
+GSE150903_SCT_scaled_count_matrix.tsv.gz
 ```
 
 This is a processed SCTransform-scaled expression matrix, not raw FASTQ data and

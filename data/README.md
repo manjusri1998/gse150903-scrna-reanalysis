@@ -11,12 +11,18 @@ because transcriptomics matrices and AnnData files can be large.
 To reproduce the recommended notebook, download the processed supplementary
 matrix from GEO:
 
-- `GSE150903_SCT_scaled_count_matrix.txt.gz`
+- `GSE150903_SCT_scaled_count_matrix.tsv.gz`
 
-Then unzip it and place the resulting file here:
+Then either keep it compressed here:
 
 ```text
-data/processed/GSE150903_SCT_scaled_count_matrix.txt
+data/processed/GSE150903_SCT_scaled_count_matrix.tsv.gz
+```
+
+or unzip it and place the resulting file here:
+
+```text
+data/processed/GSE150903_SCT_scaled_count_matrix.tsv
 ```
 
 This matrix is already SCTransform-scaled and appears to correspond to the

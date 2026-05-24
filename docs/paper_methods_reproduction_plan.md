@@ -56,7 +56,7 @@ Python with Scanpy, using the processed SCT-scaled matrix released on GEO.
 
 ## Important Reproduction Boundary
 
-GEO provides `GSE150903_SCT_scaled_count_matrix.txt.gz` as the processed matrix.
+GEO provides `GSE150903_SCT_scaled_count_matrix.tsv.gz` as the processed matrix.
 That file is already SCTransform-derived, so the Python reproduction should not
 treat it as raw UMI counts.
 
