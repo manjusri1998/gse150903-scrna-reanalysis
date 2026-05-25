@@ -108,7 +108,8 @@ as portfolio outputs.
 ├── notebooks/
 │   ├── 01_exploratory_first_pass_reanalysis.ipynb
 │   ├── 02_methods_guided_reanalysis.ipynb
-│   └── 03_mature_chp_subclustering_stress_mito.ipynb
+│   ├── 03_mature_chp_subclustering_stress_mito.ipynb
+│   └── 04_reference_comparison_and_enrichment.ipynb
 ├── results/
 │   └── figures/
 │       ├── reviewed_cell_type_composition_by_sample.png
@@ -152,6 +153,17 @@ notebooks/03_mature_chp_subclustering_stress_mito.ipynb
 
 It subclusters mature ChP-like cells and scores stress, mitochondrial, dark ChP,
 ciliated ChP, and barrier/transport gene programs.
+
+The enrichment and reference-comparison notebook starts from the mature ChP
+object saved by notebook 03:
+
+```text
+notebooks/04_reference_comparison_and_enrichment.ipynb
+```
+
+It generates pseudobulk summaries, extracts markers, performs functional
+theme/enrichment checks, compares dark and light ChP-like programs, and reviews
+sample-stage composition.
 
 ## Data Source
 
