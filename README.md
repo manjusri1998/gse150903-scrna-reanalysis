@@ -107,7 +107,8 @@ as portfolio outputs.
 │   └── paper_methods_reproduction_plan.md
 ├── notebooks/
 │   ├── 01_exploratory_first_pass_reanalysis.ipynb
-│   └── 02_methods_guided_reanalysis.ipynb
+│   ├── 02_methods_guided_reanalysis.ipynb
+│   └── 03_mature_chp_subclustering_stress_mito.ipynb
 ├── results/
 │   └── figures/
 │       ├── reviewed_cell_type_composition_by_sample.png
@@ -141,6 +142,16 @@ notebooks/02_methods_guided_reanalysis.ipynb
 
 Run the notebook from the repository root so relative paths such as
 `data/processed/...` resolve correctly.
+
+The mature ChP follow-up notebook starts from the annotated AnnData file saved by
+notebook 02:
+
+```text
+notebooks/03_mature_chp_subclustering_stress_mito.ipynb
+```
+
+It subclusters mature ChP-like cells and scores stress, mitochondrial, dark ChP,
+ciliated ChP, and barrier/transport gene programs.
 
 ## Data Source
 
